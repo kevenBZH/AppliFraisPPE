@@ -16,9 +16,9 @@ class C_default extends CI_Controller {
 	 * soit elle n'existe pas et on envoie la vue de connexion
 	*/
 	public function index()
-	{
+	{ 
 		$this->load->model('authentif');
-		
+		$this->load->model('dataAccess');
 		if (!$this->authentif->estConnecte()) 
 		{
 			$data = array();
@@ -26,8 +26,17 @@ class C_default extends CI_Controller {
 		}
 		else
 		{
+			$login = $this->input->post('login');
+			$mdp = $this->input->post('mdp');
 			$this->load->helper('url');
-			redirect('/c_visiteur/');
+			$type = $this->dataAccess->getInfosComptable($login, $mdp);
+			$type =  $type['type'];
+			
+			if ($type == 2){
+				redirect('/c_comptable/');
+			} else {
+				redirect('/c_visiteur/');
+			}
 		}
 	}
 	

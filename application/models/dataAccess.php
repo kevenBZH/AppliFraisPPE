@@ -20,13 +20,23 @@ class DataAccess extends CI_Model {
 	 * @return l'id, le nom et le prénom sous la forme d'un tableau associatif 
 	*/
 	public function getInfosVisiteur($login, $mdp){
-		$req = "select visiteur.id as id, visiteur.nom as nom, visiteur.prenom as prenom 
+		$req = "select visiteur.id as id, visiteur.nom as nom, visiteur.prenom as prenom
 				from visiteur 
 				where visiteur.login=? and visiteur.mdp=?";
 		$rs = $this->db->query($req, array ($login, $mdp));
 		$ligne = $rs->first_row('array'); 
 		return $ligne;
 	}
+	
+	public function getInfosComptable($login, $mdp){
+		$req = "select visiteur.typeVisiteur as type
+				from visiteur
+				where visiteur.login=? and visiteur.mdp=?";
+		$rs = $this->db->query($req, array ($login, $mdp));
+		$ligne = $rs->first_row('array');
+		return $ligne;
+	}
+	
 
 	/**
 	 * Retourne sous forme d'un tableau associatif toutes les lignes de frais hors forfait
