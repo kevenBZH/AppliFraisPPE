@@ -28,6 +28,8 @@ class DataAccess extends CI_Model {
 		return $ligne;
 	}
 	
+	/** Retourne les infos d'un Comptable */
+	
 	public function getInfosComptable($login, $mdp){
 		$req = "select visiteur.typeVisiteur as type
 				from visiteur
@@ -205,7 +207,18 @@ class DataAccess extends CI_Model {
 				$this->majEtatFicheFrais($idVisiteur, $mois,'CL');
 		}
 	}
+	
+	
+	public function valideFiche($idVisiteur,$mois){//change l'état de la fiche en VA pour Validée
+		$this->majEtatFicheFrais($idVisiteur, $mois,'VA');
+	}
 
+	
+	public function refuseFiche($idVisiteur,$mois){//change l'état de la fiche en RF pour Réfusée
+		$this->majEtatFicheFrais($idVisiteur, $mois,'RF');
+	}
+	
+	
 	/**
 	 * Crée un nouveau frais hors forfait pour un visiteur un mois donné
 	 * à partir des informations fournies en paramètre
@@ -309,6 +322,20 @@ class DataAccess extends CI_Model {
 		$lesFiches = $rs->result_array();
 		return $lesFiches;
 	}
+	
+	/** Obtient toutes les fiches validées par n'importe quel visiteur  */
+	
+	public function getFichesValidation ($idVisiteur) {
+		$req = "select idVisiteur, nom, prenom, mois, montantValide, dateModif, visiteur.id, libelle, etat.id
+		from visiteur,  fichefrais inner join Etat on ficheFrais.idEtat = Etat.id
+		where visiteur.id = idVisiteur
+		order by idVisiteur, mois desc";
+		$rs = $this->db->query($req);
+		$lesFiches = $rs->result_array();
+		return $lesFiches;
+	}
+	
+	
 	
 	/**
 	 * Calcule le montant total de la fiche pour un visiteur et un mois donnés
